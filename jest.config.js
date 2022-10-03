@@ -1,12 +1,12 @@
 module.exports = {
   globals: {
-    'ts-jest': {
+    "ts-jest": {
       diagnostics: false,
       isolatedModules: true,
     },
   },
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  roots: ['./src/', './test/'],
-  moduleFileExtensions: ['ts', 'js'],
+  preset: "ts-jest",
+  testEnvironment: "node",
+  roots: ["./test/"],
+  moduleFileExtensions: ["ts", "js"],
 };
