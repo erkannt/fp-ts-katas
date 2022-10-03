@@ -1,6 +1,12 @@
 import { faker } from "@faker-js/faker";
 import * as E from "fp-ts/Either";
 
+// Deal with two dependencies that could fail
+//
+// Make the test pass by implementing getAndCombineResults
+//
+// Hint: sequenceS
+
 type Ports = {
   getName: (userId: string) => E.Either<number, string>;
   getEmail: (userId: string) => E.Either<number, string>;
