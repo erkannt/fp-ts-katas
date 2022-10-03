@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 import * as E from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as R from "fp-ts/Record";
 
 // Conditionals, eithers and pipes
 //
@@ -15,17 +17,22 @@ type CheckPrice = (
   prices: Record<string, number>
 ) => (req: Request) => E.Either<string, number>;
 
-const checkPrice: CheckPrice = (prices) => (request) => {
-  // Refactor this to be a single pipe
-  if (request.tag !== "fruit") {
-    return E.left("not fruit");
-  }
-  const price = prices[request.name];
-  if (!price) {
-    return E.left("price not known");
-  }
-  return E.right(price);
-};
+const isFruitRequest = (r: Request) => r.tag === "fruit";
+
+const lookupIn = (prices: Record<string, number>) => (name: string) =>
+  pipe(
+    prices,
+    R.lookup(name),
+    E.fromOption(() => "price not known")
+  );
+
+const checkPrice: CheckPrice = (prices) => (request) =>
+  pipe(
+    request,
+    E.fromPredicate(isFruitRequest, () => "not fruit"),
+    E.map((req) => req.name),
+    E.chain(lookupIn(prices))
+  );
 
 describe("lookup-value-only-in-some-cases", () => {
   describe("given a fruit request for which we know the price", () => {
