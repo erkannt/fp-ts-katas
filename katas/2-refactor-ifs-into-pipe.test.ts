@@ -5,6 +5,8 @@ import * as E from "fp-ts/Either";
 //
 // The implementation of checkPrice passes all tests.
 // Can you turn it into a single pipe?
+//
+// Hint: Build the pipe starting from the bottom.
 
 type Request = {
   tag: "fruit" | "vegetable";
