@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 import * as E from "fp-ts/Either";
+import { sequenceS } from "fp-ts/lib/Apply";
+import { pipe } from "fp-ts/lib/function";
 
 // Deal with two dependencies that could fail
 //
@@ -14,7 +16,18 @@ type Ports = {
 
 type GetAndCombineResults = (port: Ports) => (userId: string) => string;
 
-const getAndCombineResults: GetAndCombineResults = () => () => "";
+const getAndCombineResults: GetAndCombineResults = (ports) => (userId) =>
+  pipe(
+    {
+      name: ports.getName(userId),
+      email: ports.getEmail(userId),
+    },
+    sequenceS(E.Apply),
+    E.match(
+      () => "something failed",
+      (data) => `${data.name}: ${data.email}`
+    )
+  );
 
 describe("two-ports-that-can-fail", () => {
   describe("when both ports succeed", () => {
